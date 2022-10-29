@@ -59,7 +59,7 @@ end
 function m.key_hook(...) end
 function m.redraw_hook() return false end
 
-function m.arclearn_callback(p, r)
+function amap.arclearn_callback(p, r)
   m.page = p
   m.ring = r
   local i = page[m.pos + 1]

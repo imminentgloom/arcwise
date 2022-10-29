@@ -2,7 +2,6 @@
 -- arc ring control
 
 local amap = require(_path.code .. "arcwise/lib/arc_map")
-local m = require(_path.code .. "arcwise/lib/mod_menu")
 local A = {
   shift = false,
   page = 1,
@@ -59,7 +58,7 @@ function A:delta(n, d)
   else
     if A.arclearn then
       A.arclearn = false
-      m.arclearn_callback(self.page, n)
+      amap.arclearn_callback(self.page, n)
     end
     local id = amap.rev[self.page][n]
     d = d * amap.data[id].scale
