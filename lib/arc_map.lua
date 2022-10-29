@@ -91,7 +91,7 @@ function amap.read()
     end
     amap.refresh()
   else
-    print("arcise.read: " .. filename .. " not read, using defaults.")
+    print("arcwise.read: " .. filename .. " not read, using defaults.")
   end
 end
 

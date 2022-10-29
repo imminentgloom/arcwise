@@ -108,7 +108,6 @@ mod.hook.register("script_pre_init", "arcwise_script_pre_init", function()
     else
       params:set("arcwise_enable", 1)
     end
-    Arc_Map.setup()
   end
   local script_key = key
   key = function(n, z)
@@ -121,5 +120,5 @@ mod.hook.register("script_post_cleanup", "arcwise_script_post_cleanup", function
   A.arc = nil
   Arcwise.state.script_delta = nil
   set_arcwise_enabled(1)
-  Arc_Map.reset()
+  Mod_Menu.reset()
 end)

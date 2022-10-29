@@ -27,6 +27,9 @@ m.__index = m
 m.mMAP = mMAP
 m.mMAPEDIT = mMAPEDIT
 
+function m.init() end
+function m.deinit() end
+
 function m.reset()
   page = nil
   m.pos = 0
@@ -232,7 +235,7 @@ function m.redraw()
           screen.text_center(name)
         elseif type == params.tGROUP then
           screen.move(0, 10 * i)
-          screen.text(name .. ">")
+          screen.text(name .. " >")
         else
           screen.move(0, 10 * i)
           screen.text(id)

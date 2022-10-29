@@ -6,7 +6,8 @@ local A = {
   shift = false,
   page = 1,
   ring = 1,
-  arclearn = false
+  arclearn = false,
+  data = {}
 }
 
 function A.init()
@@ -36,8 +37,10 @@ function A.init()
 end
 
 function A.deinit()
-  A.timer:stop()
-  A.timer = nil
+  if A.timer then
+    A.timer:stop()
+    A.timer = nil
+  end
 end
 
 function A:delta(n, d)
@@ -50,10 +53,14 @@ function A:delta(n, d)
       self.ring = util.clamp(self.ring + d, 1, 4)
     elseif n == 3 then
       local am = amap.data[amap.rev[self.page][self.ring]]
-      am.scale = util.clamp(am.scale + d * 0.1, 0.1, 1)
+      if am then
+        am.scale = util.clamp(am.scale + d * 0.1, 0.1, 1)
+      end
     elseif n == 4 then
       local am = amap.data[amap.rev[self.page][self.ring]]
-      am.slide = util.clamp(am.slide + d * 0.1, 0, 4)
+      if am then
+        am.slide = util.clamp(am.slide + d * 0.1, 0, 4)
+      end
     end
   else
     if A.arclearn then
@@ -61,13 +68,15 @@ function A:delta(n, d)
       amap.arclearn_callback(self.page, n)
     end
     local id = amap.rev[self.page][n]
-    d = d * amap.data[id].scale
-    if not self.data[id] then
-      self.data[id] = {}
-      self.data[id].d = 0
-      self.data[id].flag = false
+    if id then
+      d = d * amap.data[id].scale
+      if not self.data[id] then
+        self.data[id] = {}
+        self.data[id].d = 0
+        self.data[id].flag = false
+      end
+      self.data[id].d = self.data[id].d + d
     end
-    self.data[id].d = self.data[id].d + d
   end
 end
 
@@ -81,27 +90,31 @@ function A:redraw()
       self.arc:led(2, j, (j - 1) // 16 == r and 15 or 4)
     end
     local am = amap.data[amap.rev[self.page][self.ring]]
-    local val1 = util.linlin(0.1, 1, .2*math.pi, 1.8*math.pi, am.scale)
-    local val2 = util.linlin(0, 4, .2*math.pi, 1.8*math.pi, am.slide)
-    self.arc:segment(3, val1 - .1 + math.pi, val1 + .1 + math.pi, 15)
-    self.arc:segment(4, val2 - .1 + math.pi, val2 + .1 + math.pi, 15)
+    if am then
+      local val1 = util.linlin(0.1, 1, .2*math.pi, 1.8*math.pi, am.scale)
+      local val2 = util.linlin(0, 4, .2*math.pi, 1.8*math.pi, am.slide)
+      self.arc:segment(3, val1 - .1 + math.pi, val1 + .1 + math.pi, 15)
+      self.arc:segment(4, val2 - .1 + math.pi, val2 + .1 + math.pi, 15)
+    end
   else
     for n = 1, 4 do
       local id = amap.rev[self.page][n]
-      local type = params:t(id)
-      local minval
-      local maxval
-      if type == params.tNUMBER or type == params.tOPTION or type == params.tBINARY then
-        local r = params:get_range(id)
-        minval = r[1]
-        maxval = r[2]
-      else
-        local param = params:lookup_param(id)
-        minval = param:map_value(0)
-        maxval = param:map_value(1)
+      if id then
+        local type = params:t(id)
+        local minval
+        local maxval
+        if type == params.tNUMBER or type == params.tOPTION or type == params.tBINARY then
+          local r = params:get_range(id)
+          minval = r[1]
+          maxval = r[2]
+        else
+          local param = params:lookup_param(id)
+          minval = param:map_value(0)
+          maxval = param:map_value(1)
+        end
+        local val = util.linlin(minval, maxval, .2*math.pi, 1.8*math.pi, params:get(id))
+        self.arc:segment(n, val - .1 + math.pi, val + .1 * math.pi, 15)
       end
-      local val = util.linlin(minval, maxval, .2*math.pi, 1.8*math.pi, params:get(id))
-      self.arc:segment(n, val - .1 + math.pi, val + .1 * math.pi, 15)
     end
   end
 end
