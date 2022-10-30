@@ -44,7 +44,7 @@ function A.deinit()
 end
 
 function A:delta(n, d)
-  d = d * 0.1
+  d = d * 0.025
   if self.shift then
     if n == 1 then
       -- change page
@@ -87,8 +87,8 @@ function A:redraw()
     local i = self.page - 1
     local r = self.ring - 1
     for j = 1, 64 do
-      self.arc:led(1, j, (j - 1) // 4 == i and 15 or 4)
-      self.arc:led(2, j, (j - 1) // 16 == r and 15 or 4)
+      self.arc:led(1, j + 32, (j - 1) // 4 == i and 15 or 4)
+      self.arc:led(2, j + 32, (j - 1) // 16 == r and 15 or 4)
     end
     local am = amap.data[amap.rev[self.page][self.ring]]
     if am then
