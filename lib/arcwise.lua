@@ -117,6 +117,7 @@ function A:redraw()
       end
     end
   end
+  self.arc.refresh()
 end
 
 return A

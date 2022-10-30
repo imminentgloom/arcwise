@@ -29,7 +29,7 @@ end
 function amap.assign(id, page, ring)
   local prev = amap.rev[page][ring]
   if prev and prev ~= id then
-    amap.remove(id)
+    amap.remove(prev)
   end
   local a = amap.data[id]
   amap.rev[a.page][a.ring] = nil

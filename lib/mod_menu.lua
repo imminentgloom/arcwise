@@ -66,7 +66,7 @@ function amap.arclearn_callback(p, r)
   m.page = p
   m.ring = r
   local i = page[m.pos + 1]
-  local id = params:get(i)
+  local id = params:get_id(i)
   amap.assign(id, m.page, m.ring)
   if mod.menu.selected == mod.this_name then
     mod.menu.redraw()
@@ -152,7 +152,7 @@ function m.key(n, z)
   mod.menu.redraw()
 end
 
-m.enc = function(n, d)
+function m.enc(n, d)
   if m.mode == mMAP then
     if n == 2 and m.alt == false then
       m.pos = util.clamp(m.pos + d, 0, #page - 1)
@@ -165,44 +165,44 @@ m.enc = function(n, d)
         if i < 1 then i = #page end
       until params:t(page[i]) == params.tSEPARATOR or i == 1
       m.pos = i - 1
-    elseif m.mode == mMAPEDIT then
-      if n == 2 then
-        m.mpos = (m.mpos + d) % 9
-      elseif n == 3 then
-        local pnum = page[m.pos + 1]
-        local id = params:get_id(pnum)
-        local type = params:t(pnum)
-        local am = amap.data[id]
-        if m.mpos == 0 then
-          params:delta(pnum, d)
-        elseif m.mpos == 3 then
-          m.ring = util.clamp(m.ring + d, 1, 4)
-        elseif m.mpos == 4 then
-          m.page = util.clamp(m.page + d, 1, 16)
-        elseif m.mpos == 5 or m.mpos == 6 then
-          local param = params:lookup(id)
-          local min = 0
-          local max = 1
-          if type == params.tCONTROL or type == params.tTAPER then
-            d = d * params:get_delta()
-            if m.fine then
-              d = d / 20
-            end
-          elseif type == params.tNUMBER or type == params.tOPTION or type == params.tBINARY then
-            local r = params:get_range()
-            min = r[1]
-            max = r[2]
+    end
+  elseif m.mode == mMAPEDIT then
+    if n == 2 then
+      m.mpos = (m.mpos + d) % 9
+    elseif n == 3 then
+      local pnum = page[m.pos + 1]
+      local id = params:get_id(pnum)
+      local type = params:t(pnum)
+      local am = amap.data[id]
+      if m.mpos == 0 then
+        params:delta(pnum, d)
+      elseif m.mpos == 3 then
+        m.ring = util.clamp(m.ring + d, 1, 4)
+      elseif m.mpos == 4 then
+        m.page = util.clamp(m.page + d, 1, 16)
+      elseif m.mpos == 5 or m.mpos == 6 then
+        local param = params:lookup(id)
+        local min = 0
+        local max = 1
+        if type == params.tCONTROL or type == params.tTAPER then
+          d = d * param:get_delta()
+          if m.fine then
+            d = d / 20
           end
-          if m.mpos == 5 then
-            am.out_lo = util.clamp(am.out_lo + d, min, max)
-          elseif m.mpos == 6 then
-            am.out_hi = util.clamp(am.out_hi + d, min, max)
-          end
-        elseif m.mpos == 7 then
-          am.scale = util.clamp(am.scale + d * 0.1, 0.1, 1.0)
-        elseif m.mpos == 8 then
-          am.slide = util.clamp(am.slide + d * 0.1, 0, 4)
+        elseif type == params.tNUMBER or type == params.tOPTION or type == params.tBINARY then
+          local r = param:get_range()
+          min = r[1]
+          max = r[2]
         end
+        if m.mpos == 5 then
+          am.out_lo = util.clamp(am.out_lo + d, min, max)
+        elseif m.mpos == 6 then
+          am.out_hi = util.clamp(am.out_hi + d, min, max)
+        end
+      elseif m.mpos == 7 then
+        am.scale = util.clamp(am.scale + d * 0.1, 0.1, 1.0)
+      elseif m.mpos == 8 then
+        am.slide = util.clamp(am.slide + d * 0.1, 0, 4)
       end
     end
   end
@@ -272,7 +272,7 @@ function m.redraw()
     end
 
     local function hl(x)
-      if m.pos == x then screen.level(15) else screen.level(4) end
+      if m.mpos == x then screen.level(15) else screen.level(4) end
     end
 
     screen.move(0, 10)
@@ -282,7 +282,7 @@ function m.redraw()
     screen.text_right(params:string(pnum))
     screen.move(0, 25)
     hl(1)
-    if amap.arclearn then screen.text("LEARNING") else screen.text("LEARN") end
+    if A.arclearn then screen.text("LEARNING") else screen.text("LEARN") end
     screen.move(127, 25)
     hl(2)
     screen.text_right("CLEAR")
