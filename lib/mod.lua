@@ -111,7 +111,7 @@ mod.hook.register("script_pre_init", "arcwise_script_pre_init", function()
   end
   local script_key = key
   key = function(n, z)
-    if n == 1 then A.shift = z == 1 end
+    if n == params:get("arcwise_shift_key") then A.shift = z == 1 end
     script_key(n, z)
   end
 end)

@@ -44,6 +44,7 @@ function A.deinit()
 end
 
 function A:delta(n, d)
+  d = d * 0.1
   if self.shift then
     if n == 1 then
       -- change page
@@ -113,11 +114,11 @@ function A:redraw()
           maxval = param:map_value(1)
         end
         local val = util.linlin(minval, maxval, .2*math.pi, 1.8*math.pi, params:get(id))
-        self.arc:segment(n, val - .1 + math.pi, val + .1 * math.pi, 15)
+        self.arc:segment(n, val - .1 + math.pi, val + .1 + math.pi, 15)
       end
     end
   end
-  self.arc.refresh()
+  self.arc:refresh()
 end
 
 return A
