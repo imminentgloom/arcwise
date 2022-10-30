@@ -9,10 +9,11 @@ local A = {
   arclearn = false,
   data = {}
 }
+A.__index = A
 
-function A.init()
-  A.timer = metro.init()
-  A.timer.event = function()
+function A:init()
+  self.timer = metro.init()
+  self.timer.event = function()
     for id, datum in pairs(A.data) do
       local x = params:get(id)
       local d = datum.d
@@ -27,24 +28,24 @@ function A.init()
       local out = x + (1 - a) * d
       datum.d = a * d
       if datum.flag and util.round(datum.d, 0.001) == 0 then
-        A.data[id] = nil
+        self.data[id] = nil
       end
       params:set(id, out)
     end
-    A:redraw()
+    self:redraw()
   end
-  A.timer:start(1/15)
+  self.timer:start(1/15)
 end
 
-function A.deinit()
-  if A.timer then
-    A.timer:stop()
-    A.timer = nil
+function A:deinit()
+  if self.timer then
+    self.timer:stop()
+    self.timer = nil
   end
 end
 
 function A:delta(n, d)
-  d = d * 0.05
+  d = d * 0.1
   if self.shift then
     if n == 1 then
       -- change page
@@ -90,8 +91,9 @@ function A:redraw()
       self.arc:led(1, j + 32, (j - 1) // 4 == i and 15 or 4)
       self.arc:led(2, j + 32, (j - 1) // 16 == r and 15 or 4)
     end
-    local am = amap.data[amap.rev[self.page][self.ring]]
-    if am then
+    local id = amap.rev[self.page][self.ring]
+    if id ~= nil then
+      local am = amap.data[id]
       local val1 = util.linlin(0.1, 1, .2*math.pi, 1.8*math.pi, am.scale)
       local val2 = util.linlin(0, 4, .2*math.pi, 1.8*math.pi, am.slide)
       self.arc:segment(3, val1 - .1 + math.pi, val1 + .1 + math.pi, 15)
@@ -99,22 +101,24 @@ function A:redraw()
     end
   else
     for n = 1, 4 do
-      local id = amap.rev[self.page][n]
-      if id then
-        local type = params:t(id)
-        local minval
-        local maxval
-        if type == params.tNUMBER or type == params.tOPTION or type == params.tBINARY then
-          local r = params:get_range(id)
-          minval = r[1]
-          maxval = r[2]
-        else
-          local param = params:lookup_param(id)
-          minval = param:map_value(0)
-          maxval = param:map_value(1)
+      if amap.rev[self.page] then
+        local id = amap.rev[self.page][n]
+        if id ~= nil then
+          local type = params:t(id)
+          local minval
+          local maxval
+          if type == params.tNUMBER or type == params.tOPTION or type == params.tBINARY then
+            local r = params:get_range(id)
+            minval = r[1]
+            maxval = r[2]
+          else
+            local param = params:lookup_param(id)
+            minval = param:map_value(0)
+            maxval = param:map_value(1)
+          end
+          local val = util.linlin(minval, maxval, .2*math.pi, 1.8*math.pi, params:get(id))
+          self.arc:segment(n, val - .1 + math.pi, val + .1 + math.pi, 15)
         end
-        local val = util.linlin(minval, maxval, .2*math.pi, 1.8*math.pi, params:get(id))
-        self.arc:segment(n, val - .1 + math.pi, val + .1 + math.pi, 15)
       end
     end
   end
