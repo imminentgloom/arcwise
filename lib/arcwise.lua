@@ -49,10 +49,10 @@ function A:delta(n, d)
   if self.shift then
     if n == 1 then
       -- change page
-      self.page = util.clamp(self.page + util.round(d * 5, 1), 1, 16)
+      self.page = util.clamp(self.page + d * 10, 1, 16)
     elseif n == 2 then
       -- change selected
-      self.ring = util.clamp(self.ring + util.round(d * 5, 1), 1, 4)
+      self.ring = util.clamp(self.ring + d * 10, 1, 4)
     elseif n == 3 then
       local am = amap.data[amap.rev[self.page][self.ring]]
       if am then
