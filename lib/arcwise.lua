@@ -5,7 +5,9 @@ local amap = require(_path.code .. "arcwise/lib/arc_map")
 local A = {
   shift = false,
   page = 1,
+  page_int = 1,
   ring = 1,
+  ring_int = 1,
   arclearn = false,
   data = {}
 }
@@ -45,14 +47,16 @@ function A:deinit()
 end
 
 function A:delta(n, d)
-  d = d * 0.1
+  d = d * 0.025
   if self.shift then
     if n == 1 then
       -- change page
-      self.page = util.clamp(self.page + d * 10, 1, 16)
+      self.page_int = util.clamp(self.page_int + d, 1, 16)
+      self.page = util.round(self.page_int, 1)
     elseif n == 2 then
       -- change selected
-      self.ring = util.clamp(self.ring + d * 10, 1, 4)
+      self.ring_int = util.clamp(self.ring_int + d, 1, 4)
+      self.ring = util.round(self.ring_int, 1)
     elseif n == 3 then
       local am = amap.data[amap.rev[self.page][self.ring]]
       if am then
