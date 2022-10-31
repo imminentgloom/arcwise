@@ -70,7 +70,7 @@ mod.hook.register("system_post_startup", "arcwise_system_post_startup", function
     rebuild()
     if Mod_Menu.mode == Mod_Menu.mMAP then
       if Mod_Menu.group then
-        Mod_Menu.build_sub(Arc_Map.groupid)
+        Mod_Menu.build_sub(Mod_Menu.groupid)
       else
         Mod_Menu.build_page()
       end
