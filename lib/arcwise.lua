@@ -98,7 +98,7 @@ function A:redraw()
     local id = amap.rev[self.page][self.ring]
     if id ~= nil then
       local am = amap.data[id]
-      local val1 = util.linlin(0.1, 1, .2*math.pi, 1.8*math.pi, am.scale)
+      local val1 = util.linlin(0.1, 3, .2*math.pi, 1.8*math.pi, am.scale)
       local val2 = util.linlin(0, 4, .2*math.pi, 1.8*math.pi, am.slide)
       self.arc:segment(3, val1 - .1 + math.pi, val1 + .1 + math.pi, 15)
       self.arc:segment(4, val2 - .1 + math.pi, val2 + .1 + math.pi, 15)
