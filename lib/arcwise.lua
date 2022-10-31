@@ -60,7 +60,7 @@ function A:delta(n, d)
     elseif n == 3 then
       local am = amap.data[amap.rev[self.page][self.ring]]
       if am then
-        am.scale = util.clamp(am.scale + d * 0.1, 0.1, 1)
+        am.scale = util.clamp(am.scale + d * 0.1, 0.1, 3)
       end
     elseif n == 4 then
       local am = amap.data[amap.rev[self.page][self.ring]]

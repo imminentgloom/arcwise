@@ -27,7 +27,7 @@ m.__index = m
 m.mMAP = mMAP
 m.mMAPEDIT = mMAPEDIT
 
-function m.init() end
+function m.init() m.build_page() end
 function m.deinit() end
 
 function m.reset()

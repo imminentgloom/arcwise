@@ -55,7 +55,7 @@ Mod_Menu.redraw_hook = function()
     screen.level(4)
     screen.move(63, 40)
     screen.text_center("arcwise not enabled")
-    screen.updat()
+    screen.update()
     return true
   else
     return false
