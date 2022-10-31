@@ -47,7 +47,7 @@ function A:deinit()
 end
 
 function A:delta(n, d)
-  d = d * 0.025
+  d = d * 0.005
   if self.shift then
     if n == 1 then
       -- change page
