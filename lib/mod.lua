@@ -36,7 +36,7 @@ local function set_arcwise_enabled(x)
     end
     A:deinit()
     if mod.menu.selected == mod.this_name then
-      mod.menu.redraw()
+        if mod.menu.redraw then mod.menu.redraw() end
     end
   end
 end
@@ -99,9 +99,10 @@ mod.hook.register("script_pre_init", "arcwise_script_pre_init", function()
       name  = "enabled",
       options = {"no", "yes"},
       default = 1,
-      action = set_arcwise_enabled
+      action = function() end
     }
     script_init()
+    params:set_action("arcwise_enable", set_arcwise_enabled)
     A.arc = arc.connect()
     Arcwise.state.script_delta = A.arc.delta
     if A.arc.delta == nil then
