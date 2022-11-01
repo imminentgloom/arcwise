@@ -17,7 +17,6 @@ function A:init()
   self.timer = metro.init()
   self.timer.event = function()
     for id, datum in pairs(A.data) do
-      local x = params:get(id)
       local d = datum.d
       local am = amap.data[id]
       if am then
@@ -27,12 +26,12 @@ function A:init()
         datum.flag = true
       end
       local a = math.exp(-1/(15 * datum.slide))
-      local out = x + (1 - a) * d
+      local out = (1 - a) * d
       datum.d = a * d
       if datum.flag and util.round(datum.d, 0.001) == 0 then
         self.data[id] = nil
       end
-      params:set(id, out)
+      params:delta(id, out)
     end
     self:redraw()
   end
