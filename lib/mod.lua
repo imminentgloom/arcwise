@@ -25,9 +25,6 @@ local function set_arcwise_enabled(x)
     Arc_Map.read()
     A:init()
     A:redraw()
-    if mod.menu.selected == mod.this_name then
-      if mod.menu.redraw then mod.menu.redraw() end
-    end
   elseif x == 1 then
     print("### disabling arcwise")
     Arcwise.enabled = false
@@ -35,9 +32,6 @@ local function set_arcwise_enabled(x)
       A.arc.delta = Arcwise.state.script_delta
     end
     A:deinit()
-    if mod.menu.selected == mod.this_name then
-        if mod.menu.redraw then mod.menu.redraw() end
-    end
   end
 end
 
