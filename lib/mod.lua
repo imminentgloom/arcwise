@@ -26,7 +26,7 @@ local function set_arcwise_enabled(x)
     A:init()
     A:redraw()
     if mod.menu.selected == mod.this_name then
-      mod.menu.redraw()
+      if mod.menu.redraw then mod.menu.redraw() end
     end
   elseif x == 1 then
     print("### disabling arcwise")
@@ -74,7 +74,7 @@ mod.hook.register("system_post_startup", "arcwise_system_post_startup", function
       else
         Mod_Menu.build_page()
       end
-      if mod.menu.selected == mod.this_name then
+      if mod.menu.selected == mod.this_name and mod.menu.redraw then
         mod.menu.redraw()
       end
     end
