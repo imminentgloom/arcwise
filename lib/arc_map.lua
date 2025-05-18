@@ -4,7 +4,7 @@
 
 local amap = {
   data = {},
-  rev = {}
+  rev = {},
 }
 
 amap.__index = amap
@@ -22,7 +22,9 @@ end
 
 function amap.remove(id)
   local a = amap.data[id]
-  if a then amap.rev[a.page][a.ring] = nil end
+  if a then
+    amap.rev[a.page][a.ring] = nil
+  end
   amap.data[id] = nil
 end
 
@@ -75,7 +77,7 @@ end
 
 function amap.read()
   local function unquote(s)
-    return s:gsub('^"', ''):gsub('"$', ''):gsub('\\"', '"')
+    return s:gsub('^"', ""):gsub('"$', ""):gsub('\\"', '"')
   end
   local filename = norns.state.data .. norns.state.shortname .. ".amap"
   print(">> reading AMAP " .. filename)
@@ -83,7 +85,7 @@ function amap.read()
   if fd then
     io.close(fd)
     for line in io.lines(filename) do
-      local name, value = string.match(line, "(\".-\")%s*:%s*(.*)")
+      local name, value = string.match(line, '(".-")%s*:%s*(.*)')
       if name and value and tonumber(value) == nil then
         local x = load("return " .. unquote(value))
         amap.data[unquote(name)] = x()

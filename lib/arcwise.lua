@@ -1,6 +1,5 @@
 -- Arcwise
 -- arc ring control
-
 local amap = require(_path.code .. "arcwise/lib/arc_map")
 local A = {
   shift = false,
@@ -9,7 +8,7 @@ local A = {
   ring = 1,
   ring_int = 1,
   arclearn = false,
-  data = {}
+  data = {},
 }
 A.__index = A
 
@@ -25,7 +24,7 @@ function A:init()
       else
         datum.flag = true
       end
-      local a = math.exp(-1/(15 * datum.slide))
+      local a = math.exp(-1 / (15 * datum.slide))
       local out = (1 - a) * d
       datum.d = a * d
       if datum.flag and util.round(datum.d, 0.001) == 0 then
@@ -35,7 +34,7 @@ function A:init()
     end
     self:redraw()
   end
-  self.timer:start(1/15)
+  self.timer:start(1 / 15)
 end
 
 function A:deinit()
@@ -43,6 +42,19 @@ function A:deinit()
     self.timer:stop()
     self.timer = nil
   end
+end
+
+local arc_key_pressed = false
+
+function A:set_shift(value, is_arc_key)
+  if is_arc_key then
+    arc_key_pressed = value
+  end
+  A.shift = value or arc_key_pressed
+end
+
+function A:key(n, z)
+  A:set_shift(z == 1, true)
 end
 
 function A:delta(n, d)
@@ -54,7 +66,7 @@ function A:delta(n, d)
       self.page = util.round(self.page_int, 1)
     elseif n == 2 then
       -- change selected
-      self.ring_int = util.clamp(self.ring_int + d * 0.1, 1,4)
+      self.ring_int = util.clamp(self.ring_int + d * 0.1, 1, 4)
       self.ring = util.round(self.ring_int, 1)
     elseif n == 3 then
       local am = amap.data[amap.rev[self.page][self.ring]]
@@ -97,10 +109,10 @@ function A:redraw()
     local id = amap.rev[self.page][self.ring]
     if id ~= nil then
       local am = amap.data[id]
-      local val1 = util.linlin(0.1, 3, .2*math.pi, 1.8*math.pi, am.scale)
-      local val2 = util.linlin(0, 4, .2*math.pi, 1.8*math.pi, am.slide)
-      self.arc:segment(3, val1 - .1 + math.pi, val1 + .1 + math.pi, 15)
-      self.arc:segment(4, val2 - .1 + math.pi, val2 + .1 + math.pi, 15)
+      local val1 = util.linlin(0.1, 3, 0.2 * math.pi, 1.8 * math.pi, am.scale)
+      local val2 = util.linlin(0, 4, 0.2 * math.pi, 1.8 * math.pi, am.slide)
+      self.arc:segment(3, val1 - 0.1 + math.pi, val1 + 0.1 + math.pi, 15)
+      self.arc:segment(4, val2 - 0.1 + math.pi, val2 + 0.1 + math.pi, 15)
     end
   else
     for n = 1, 4 do
@@ -119,8 +131,8 @@ function A:redraw()
             minval = param:map_value(0)
             maxval = param:map_value(1)
           end
-          local val = util.linlin(minval, maxval, .2*math.pi, 1.8*math.pi, params:get(id))
-          self.arc:segment(n, val - .1 + math.pi, val + .1 + math.pi, 15)
+          local val = util.linlin(minval, maxval, 0.2 * math.pi, 1.8 * math.pi, params:get(id))
+          self.arc:segment(n, val - 0.1 + math.pi, val + 0.1 + math.pi, 15)
         end
       end
     end

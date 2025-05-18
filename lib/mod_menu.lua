@@ -18,7 +18,7 @@ local m = {
   am = nil,
   ring = 1,
   page = 1,
-  mpos = 1
+  mpos = 1,
 }
 local page
 
@@ -27,7 +27,9 @@ m.__index = m
 m.mMAP = mMAP
 m.mMAPEDIT = mMAPEDIT
 
-function m.init() m.build_page() end
+function m.init()
+  m.build_page()
+end
 function m.deinit() end
 
 function m.reset()
@@ -41,7 +43,9 @@ function m.build_page()
   page = {}
   local i = 1
   repeat
-    if params:visible(i) then table.insert(page, i) end
+    if params:visible(i) then
+      table.insert(page, i)
+    end
     if params:t(i) == params.tGROUP then
       i = i + params:get(i) + 1
     else
@@ -60,7 +64,9 @@ function m.build_sub(sub)
 end
 
 function m.key_hook(...) end
-function m.redraw_hook() return false end
+function m.redraw_hook()
+  return false
+end
 
 function amap.arclearn_callback(p, r)
   m.page = p
@@ -105,7 +111,9 @@ function m.key(n, z)
         local k = m.pos + 1
         repeat
           k = k + 1
-          if k > #page then k = 1 end
+          if k > #page then
+            k = 1
+          end
         until params:t(page[k]) == params.tSEPARATOR
         m.pos = k - 1
       elseif type ~= params.tFILE and type ~= params.tTEXT and type ~= params.tTRIGGER then
@@ -161,8 +169,12 @@ function m.enc(n, d)
       local i = m.pos + 1
       repeat
         i = i + d
-        if i > #page then i = 1 end
-        if i < 1 then i = #page end
+        if i > #page then
+          i = 1
+        end
+        if i < 1 then
+          i = #page
+        end
       until params:t(page[i]) == params.tSEPARATOR or i == 1
       m.pos = i - 1
     end
@@ -211,18 +223,26 @@ end
 
 function m.redraw()
   screen.clear()
-  if m.redraw_hook() then return end
+  if m.redraw_hook() then
+    return
+  end
   if m.mode == mMAP then
     if m.pos == 0 then
       local title = "PARAMETER MAP"
-      if m.group then title = title .. " / " .. m.groupname end
+      if m.group then
+        title = title .. " / " .. m.groupname
+      end
       screen.level(4)
       screen.move(0, 10)
       screen.text(title)
     end
     for i = 1, 6 do
       if (i > 2 - m.pos) and (i < #page - m.pos + 3) then
-        if i == 3 then screen.level(15) else screen.level(4) end
+        if i == 3 then
+          screen.level(15)
+        else
+          screen.level(4)
+        end
         local pnum = page[m.pos + i - 2]
         local type = params:t(pnum)
         local name = params:get_name(pnum)
@@ -240,11 +260,13 @@ function m.redraw()
           screen.move(0, 10 * i)
           screen.text(id)
           screen.move(127, 10 * i)
-          if type == params.tNUMBER or
-              type == params.tCONTROL or
-              type == params.tBINARY or
-              type == params.tOPTION or
-              type == params.tTAPER then
+          if
+            type == params.tNUMBER
+            or type == params.tCONTROL
+            or type == params.tBINARY
+            or type == params.tOPTION
+            or type == params.tTAPER
+          then
             local am = amap.data[id]
             if params:get_allow_pmap(pnum) then
               if am then
@@ -272,7 +294,11 @@ function m.redraw()
     end
 
     local function hl(x)
-      if m.mpos == x then screen.level(15) else screen.level(4) end
+      if m.mpos == x then
+        screen.level(15)
+      else
+        screen.level(4)
+      end
     end
 
     screen.move(0, 10)
@@ -282,7 +308,11 @@ function m.redraw()
     screen.text_right(params:string(pnum))
     screen.move(0, 25)
     hl(1)
-    if A.arclearn then screen.text("LEARNING") else screen.text("LEARN") end
+    if A.arclearn then
+      screen.text("LEARNING")
+    else
+      screen.text("LEARN")
+    end
     screen.move(127, 25)
     hl(2)
     screen.text_right("CLEAR")

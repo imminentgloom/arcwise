@@ -12,15 +12,21 @@ local Mod_Menu = require(_path.code .. "arcwise/lib/mod_menu")
 local Arcwise = {
   enabled = false,
   state = {
-    script_delta = function(...) end
-  }
+    script_delta = function(...) end,
+    script_arc_key = function(...) end,
+  },
 }
 
 local function set_arcwise_enabled(x)
   if x == 2 then
     print("### attempt enabling arcwise")
     Arcwise.enabled = true
-    A.arc.delta = function(n, d) A:delta(n, d) end
+    A.arc.delta = function(n, d)
+      A:delta(n, d)
+    end
+    A.arc.key = function(n, z)
+      A:key(n, z)
+    end
     Arc_Map.clear()
     Arc_Map.read()
     A:init()
@@ -30,6 +36,7 @@ local function set_arcwise_enabled(x)
     Arcwise.enabled = false
     if A.arc then
       A.arc.delta = Arcwise.state.script_delta
+      A.arc.key = Arcwise.state.script_arc_key
     end
     A:deinit()
   end
@@ -77,25 +84,26 @@ mod.hook.register("script_pre_init", "arcwise_script_pre_init", function()
   init = function()
     Arc_Map.clear()
     params:add_group("arcwise", "ARCWISE", 2)
-    params:add{
-      type  = "option",
-      id    = "arcwise_shift_key",
-      name  = "shift key",
-      options = {"K1", "K2", "K3"},
+    params:add({
+      type = "option",
+      id = "arcwise_shift_key",
+      name = "shift key",
+      options = { "K1", "K2", "K3" },
       default = 1,
-    }
-    params:add{
-      type  = "option",
-      id    = "arcwise_enable",
-      name  = "enabled",
-      options = {"no", "yes"},
+    })
+    params:add({
+      type = "option",
+      id = "arcwise_enable",
+      name = "enabled",
+      options = { "no", "yes" },
       default = 1,
-      action = function() end
-    }
+      action = function() end,
+    })
     script_init()
     params:set_action("arcwise_enable", set_arcwise_enabled)
     A.arc = arc.connect()
     Arcwise.state.script_delta = A.arc.delta
+    Arcwise.state.script_arc_key = A.arc.key
     if A.arc.delta == nil then
       params:set("arcwise_enable", 2)
     else
@@ -104,7 +112,9 @@ mod.hook.register("script_pre_init", "arcwise_script_pre_init", function()
   end
   local script_key = key
   key = function(n, z)
-    if n == params:get("arcwise_shift_key") then A.shift = z == 1 end
+    if n == params:get("arcwise_shift_key") then
+      A:set_shift(z == 1, false)
+    end
     script_key(n, z)
   end
 end)
