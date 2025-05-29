@@ -42,6 +42,10 @@ end
 function m.build_page()
   page = {}
   local i = 1
+  if not pcall(params.t, params, i) then
+    m.reset()
+    return
+  end
   repeat
     if params:visible(i) then
       table.insert(page, i)
