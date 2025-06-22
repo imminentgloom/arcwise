@@ -88,7 +88,7 @@ mod.hook.register("script_pre_init", "arcwise_script_pre_init", function()
       type = "option",
       id = "arcwise_shift_key",
       name = "shift key",
-      options = { "K1", "K2", "K3" },
+      options = { "K1", "K2", "K3", "none" },
       default = 1,
     })
     params:add({
